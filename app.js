@@ -39,7 +39,16 @@ function isDistanceWithinRadius(lat1, lon1, lat2, lon2, unit) {
 
 
 app.get('/', function(req, res) {
-    res.send('Hello, Evan');
+    res.send(
+        'Hello, Close5!</br>'+
+        '1. Get One Item - localhost:8080/items/53fbe21c456e74467b000006</br>'+
+        '2. Get Nearby Items - localhost:8080/items/all/nearby</br>'+
+        '3. Get User Items - localhost:8080/items/user/53f6c9c96d1944af0b00000b</br>'+
+        '4. Get Oldest Items - localhost:8080/items/sort/asc/created</br>'+
+        '5. Get Newest Items - localhost:8080/items/sort/des/created</br>'+
+        '6. Get Cheapest Items - localhost:8080/items/sort/asc/price</br>'+
+        '7. Get Most Expensive Items - localhost:8080/items/sort/des/price</br>'
+    );
 });
 
 
@@ -101,7 +110,7 @@ app.get('/items/user/:userId', function(req, res){
 
 
 // oldest to newest
-app.get('/items/asc/sort/created', function(req, res){
+app.get('/items/sort/asc/created', function(req, res){
     var newToOldItems = db.sort(function(a,b){
         // convert into timestamps
         return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime();
@@ -110,7 +119,7 @@ app.get('/items/asc/sort/created', function(req, res){
 });
 
 // newest to oldest
-app.get('/items/des/sort/created', function(req, res){
+app.get('/items/sort/des/created', function(req, res){
     var oldToNewItems = db.sort(function(a,b){
         // convert into timestamps
         return new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime();
@@ -119,7 +128,7 @@ app.get('/items/des/sort/created', function(req, res){
 });
 
 // lowest to highest
-app.get('/items/asc/sort/price', function(req, res) {
+app.get('/items/sort/asc/price', function(req, res) {
     var lowToHighPriceItems = db.filter(function(e){ return e.price > -1 }).sort(function(a,b){
         return a.price > b.price;
     });
@@ -127,7 +136,7 @@ app.get('/items/asc/sort/price', function(req, res) {
 });
 
 // highest to lowest
-app.get('/items/des/sort/price', function(req, res) {
+app.get('/items/sort/des/price', function(req, res) {
     var highToLowPriceItems = db.filter(function(e){ return e.price > -1 }).sort(function(a,b){
         return a.price < b.price;
     });
