@@ -1,21 +1,10 @@
 /* Close5 Code Challenge
 ​
-In this coding challenge, I'm requesting that you create and API server preferably using express 4, but you can also use other http server frameworks (or none at all). If you do please comment in the code explaining why you did this.
-​
-Below you will find a large JSON array of objects. These objects are small representations of items that people have listed for sale on Close5. With your API server, I would like you to use this static array as your database and created 1 or more http routes that return this data as JSON in various different ways. They include:
-​
-* The entire list sorted by creation date (Ascending and Descending)
-* The entire listed sorted by the item’s price (Ascending and Descending)
-* Any single item by its id
-* An array of items based on any userId
-* A route to request for items within 50 miles of their location coordinates
-​
-The file(s) should be bundled up into one node project so that I can just run `node app.js`. I should then be able to hit localhost:8080 which will give me some kind of guide as to how to navigate your API.
-​
-Feel free to ask any questions or for clarity on the challenge. You can email me the zip file or send me a github link
-​
-Good luck!
-​
+Notes:
+-Did not include MongoDB/Mongoose, but functionality should be similar (findOne, find, etc.) Happy to discuss these technologies.
+-Thought of combining the item sort endpoint, but figured it'd be best to keep it all separate.
+-If I were to keep working on this, I'd construct an appropriate file structure, with models, tests, endpoints, etc. grouped appropriately.
+-Would expand error handling, especially in PUT/POST endpoints to ensure uncompromised data
 ​
 */
 
@@ -57,6 +46,7 @@ app.get('/items/:itemId', function(req, res){
     // item id: 53fbe21c456e74467b000006
     var itemId = req.params.itemId;
 
+	// check for invalid alphanumeric id
     if(itemId.length !== 24){
         res.send('Invalid Item ID!')
     }
@@ -65,6 +55,7 @@ app.get('/items/:itemId', function(req, res){
         return item.id === itemId;
     });
 
+	// if resul, return result
     if(matchingItem){
         res.send(matchingItem);
     }else{
@@ -93,6 +84,7 @@ app.get('/items/user/:userId', function(req, res){
     // user id: 53f6c9c96d1944af0b00000b
     var userId = req.params.userId;
 
+	// check for invalid alphanumeric id
     if(userId.length !== 24){
         res.send('Invalid User ID!')
     }
@@ -101,6 +93,7 @@ app.get('/items/user/:userId', function(req, res){
         return item.userId === userId;
     });
 
+	// if results, return results
     if(matchingItems.length){
         res.send(matchingItems);
     }else{
@@ -129,6 +122,7 @@ app.get('/items/sort/des/created', function(req, res){
 
 // lowest to highest
 app.get('/items/sort/asc/price', function(req, res) {
+	// filter out all items without a price, then sort
     var lowToHighPriceItems = db.filter(function(e){ return e.price > -1 }).sort(function(a,b){
         return a.price > b.price;
     });
@@ -137,6 +131,7 @@ app.get('/items/sort/asc/price', function(req, res) {
 
 // highest to lowest
 app.get('/items/sort/des/price', function(req, res) {
+	// filter out all items without a price, then sort
     var highToLowPriceItems = db.filter(function(e){ return e.price > -1 }).sort(function(a,b){
         return a.price < b.price;
     });
